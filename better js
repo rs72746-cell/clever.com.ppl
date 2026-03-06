@@ -1,0 +1,51 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const scene = document.querySelector('.scene');
+    
+    // Function to create a Minecraft-style block
+    function createBlock() {
+        const cube = document.createElement('div');
+        cube.classList.add('cube');
+
+        const faces = ['front', 'back', 'right', 'left', 'top', 'bottom'];
+        faces.forEach(faceName => {
+            const face = document.createElement('div');
+            face.classList.add('face', faceName);
+            cube.appendChild(face);
+        });
+
+        scene.appendChild(cube);
+    }
+
+    createBlock();
+
+    // Basic interaction: rotate scene with mouse movement
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    let rotation = { x: -30, y: 45 };
+
+    document.addEventListener('mousedown', (event) => {
+        isDragging = true;
+        previousMousePosition = { x: event.clientX, y: event.clientY };
+    });
+
+    document.addEventListener('mousemove', (event) => {
+        if (!isDragging) return;
+
+        const deltaX = event.clientX - previousMousePosition.x;
+        const deltaY = event.clientY - previousMousePosition.y;
+
+        rotation.y += deltaX * 0.5;
+        rotation.x -= deltaY * 0.5;
+
+        // Limit rotation to avoid flipping the world upside down
+        rotation.x = Math.max(-90, Math.min(90, rotation.x));
+
+        scene.style.transform = `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`;
+
+        previousMousePosition = { x: event.clientX, y: event.clientY };
+    });
+
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+    });
+});
